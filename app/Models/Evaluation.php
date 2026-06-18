@@ -58,4 +58,9 @@ class Evaluation extends Model
     {
         return $query->where('status', 'published');
     }
+
+    public function scopeByCompany($query, $companyId)
+    {
+        return $query->where('company_id', $companyId);
+    }
 }

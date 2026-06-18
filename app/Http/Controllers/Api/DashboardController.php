@@ -72,13 +72,13 @@ class DashboardController extends Controller
                     WHEN percentage >= 70 THEN '70-79'
                     WHEN percentage >= 60 THEN '60-69'
                     ELSE '<60'
-                END as range,
+                END as score_range,
                 COUNT(*) as count
             ")
-            ->groupBy('range')
-            ->orderBy('range')
+            ->groupBy('score_range')
+            ->orderBy('score_range')
             ->get()
-            ->pluck('count', 'range');
+            ->pluck('count', 'score_range');
 
         // Recent activities
         $recentEnrollments = CourseEnrollment::where('company_id', $companyId)
