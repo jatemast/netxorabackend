@@ -28,6 +28,13 @@ use App\Http\Controllers\Api\EvaluationController;
 use App\Http\Controllers\Api\CertificateController;
 use App\Http\Controllers\Api\CertificateTemplateController;
 use App\Http\Controllers\Api\MicrolearningController;
+use App\Http\Controllers\Api\OrganizationalStructureController;
+use App\Http\Controllers\Api\DocumentController;
+use App\Http\Controllers\Api\GamificationController;
+use App\Http\Controllers\Api\WhatsAppController;
+use App\Http\Controllers\Api\Admin\CompanyController as AdminCompanyController;
+use App\Http\Controllers\Api\Admin\MasterDashboardController;
+use App\Http\Controllers\Api\Admin\ImpersonationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,4 +111,72 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/microlearning/{content}/assign', [MicrolearningController::class, 'assign']);
     Route::get('/microlearning-tracking', [MicrolearningController::class, 'tracking']);
     Route::post('/microlearning-tracking/status', [MicrolearningController::class, 'markStatus']);
+
+    // Organizational Structure
+    Route::get('/organigram/{company}', [OrganizationalStructureController::class, 'organigram']);
+    Route::get('/branches', [OrganizationalStructureController::class, 'branches']);
+    Route::post('/branches', [OrganizationalStructureController::class, 'storeBranch']);
+    Route::put('/branches/{branch}', [OrganizationalStructureController::class, 'updateBranch']);
+    Route::delete('/branches/{branch}', [OrganizationalStructureController::class, 'destroyBranch']);
+    Route::get('/areas', [OrganizationalStructureController::class, 'areas']);
+    Route::post('/areas', [OrganizationalStructureController::class, 'storeArea']);
+    Route::put('/areas/{area}', [OrganizationalStructureController::class, 'updateArea']);
+    Route::delete('/areas/{area}', [OrganizationalStructureController::class, 'destroyArea']);
+    Route::get('/processes', [OrganizationalStructureController::class, 'processes']);
+    Route::post('/processes', [OrganizationalStructureController::class, 'storeProcess']);
+    Route::put('/processes/{process}', [OrganizationalStructureController::class, 'updateProcess']);
+    Route::delete('/processes/{process}', [OrganizationalStructureController::class, 'destroyProcess']);
+    Route::get('/positions', [OrganizationalStructureController::class, 'positions']);
+    Route::post('/positions', [OrganizationalStructureController::class, 'storePosition']);
+    Route::put('/positions/{position}', [OrganizationalStructureController::class, 'updatePosition']);
+    Route::delete('/positions/{position}', [OrganizationalStructureController::class, 'destroyPosition']);
+
+    // Documents
+    Route::apiResource('documents', DocumentController::class);
+    Route::post('/documents/{document}/assign', [DocumentController::class, 'assign']);
+    Route::get('/documents-tracking', [DocumentController::class, 'tracking']);
+
+    // Gamification
+    Route::get('/badges', [GamificationController::class, 'badges']);
+    Route::post('/badges', [GamificationController::class, 'storeBadge']);
+    Route::put('/badges/{badge}', [GamificationController::class, 'updateBadge']);
+    Route::delete('/badges/{badge}', [GamificationController::class, 'destroyBadge']);
+    Route::get('/employee-badges', [GamificationController::class, 'employeeBadges']);
+    Route::get('/leaderboard', [GamificationController::class, 'leaderboard']);
+    Route::get('/points', [GamificationController::class, 'points']);
+    Route::get('/challenges', [GamificationController::class, 'challenges']);
+    Route::post('/challenges', [GamificationController::class, 'storeChallenge']);
+    Route::put('/challenges/{challenge}', [GamificationController::class, 'updateChallenge']);
+    Route::post('/challenges/{challenge}/join', [GamificationController::class, 'joinChallenge']);
+    Route::post('/challenges/{challenge}/complete', [GamificationController::class, 'completeChallenge']);
+
+    // WhatsApp & Surveys
+    Route::get('/whatsapp-schedules', [WhatsAppController::class, 'schedules']);
+    Route::post('/whatsapp-schedules', [WhatsAppController::class, 'storeSchedule']);
+    Route::put('/whatsapp-schedules/{schedule}', [WhatsAppController::class, 'updateSchedule']);
+    Route::delete('/whatsapp-schedules/{schedule}', [WhatsAppController::class, 'destroySchedule']);
+    Route::get('/whatsapp-messages', [WhatsAppController::class, 'messages']);
+    Route::get('/surveys', [WhatsAppController::class, 'surveys']);
+    Route::post('/surveys', [WhatsAppController::class, 'storeSurvey']);
+    Route::put('/surveys/{survey}', [WhatsAppController::class, 'updateSurvey']);
+    Route::post('/surveys/{survey}/submit', [WhatsAppController::class, 'submitSurvey']);
+    Route::get('/surveys/{survey}/results', [WhatsAppController::class, 'surveyResults']);
+
+    // ─── Master / Super-Admin Routes ──────────────────────────────────
+    Route::middleware('role:Super Administrador')->group(function () {
+        // Master Dashboard (platform-wide stats)
+        Route::get('/admin/dashboard', [MasterDashboardController::class, 'index']);
+
+        // Company CRUD
+        Route::get('/admin/companies', [AdminCompanyController::class, 'index']);
+        Route::get('/admin/companies/{company}', [AdminCompanyController::class, 'show']);
+        Route::post('/admin/companies', [AdminCompanyController::class, 'store']);
+        Route::put('/admin/companies/{company}', [AdminCompanyController::class, 'update']);
+        Route::delete('/admin/companies/{company}', [AdminCompanyController::class, 'destroy']);
+        Route::post('/admin/companies/{company}/toggle-active', [AdminCompanyController::class, 'toggleActive']);
+
+        // Impersonation
+        Route::post('/admin/impersonate/{company}', [ImpersonationController::class, 'impersonate']);
+        Route::post('/admin/stop-impersonating', [ImpersonationController::class, 'stopImpersonating']);
+    });
 });
