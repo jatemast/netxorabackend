@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             EmployeeSeeder::class,
             CourseCategorySeeder::class,
             CourseSeeder::class,
+            CourseCatalogSeeder::class,
             QuestionBankSeeder::class,
             EvaluationSeeder::class,
             MicrolearningSeeder::class,
